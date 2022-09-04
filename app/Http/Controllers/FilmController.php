@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
 use App\Http\Requests\UpdateFilmRequest;
+use Illuminate\Http\Request;
 
 class FilmController extends Controller
 {
@@ -13,9 +14,19 @@ class FilmController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Film::all();
+        $films = Film::query();
+        $genre = $request->query('genre_id');
+        $sort = $request->query('sort');
+        if ($genre) {
+            $films->where('genre_id', $genre);
+        }
+        if ($sort) {
+            substr($sort,0,1) === '-' ? $films->orderBy('title', 'desc') : $films->orderBy('title');
+        }
+
+        return $films->get();
     }
 
     /**
@@ -38,7 +49,9 @@ class FilmController extends Controller
      */
     public function show(Film $film)
     {
-        return Film::findOrFail($film->id);
+        $film = Film::findOrFail($film->id);
+        $artists = $film->artists()->pluck('name');
+        return response()->json(['Film' => $film, 'Artists' => $artists]);
     }
 
     /**
