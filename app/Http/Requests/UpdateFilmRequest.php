@@ -13,7 +13,7 @@ class UpdateFilmRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class UpdateFilmRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "title" => 'string|min:3|max:100',
+            "genre_id" => 'integer'
         ];
     }
 }
