@@ -9,6 +9,8 @@ class Film extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['title', 'genre_id'];
+
     public function genre()
     {
         return $this->belongsTo('App\Models\Genre');
