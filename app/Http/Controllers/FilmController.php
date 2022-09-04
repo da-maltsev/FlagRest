@@ -15,7 +15,7 @@ class FilmController extends Controller
      */
     public function index()
     {
-        //
+        return Film::all();
     }
 
     /**
@@ -26,7 +26,8 @@ class FilmController extends Controller
      */
     public function store(StoreFilmRequest $request)
     {
-        //
+        $film = Film::create($request->validated());
+        return $film;
     }
 
     /**
@@ -37,7 +38,7 @@ class FilmController extends Controller
      */
     public function show(Film $film)
     {
-        //
+        return Film::findOrFail($film->id);
     }
 
     /**
@@ -49,7 +50,10 @@ class FilmController extends Controller
      */
     public function update(UpdateFilmRequest $request, Film $film)
     {
-        //
+        $filmUpd = Film::findOrFail($film->id);
+        $filmUpd->fill($request->all());
+        $filmUpd->save();
+        return $filmUpd;
     }
 
     /**
@@ -60,6 +64,8 @@ class FilmController extends Controller
      */
     public function destroy(Film $film)
     {
-        //
+        $film = Film::findOrFail($film->id);
+        $film->delete();
+        return response(null, 204);
     }
 }
