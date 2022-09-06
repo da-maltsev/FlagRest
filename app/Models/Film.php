@@ -10,6 +10,7 @@ class Film extends Model
     use HasFactory;
 
     protected $fillable = ['title', 'genre_id'];
+    protected $hidden = ['created_at', 'updated_at'];
 
     public function genre()
     {
