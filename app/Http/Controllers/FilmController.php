@@ -59,7 +59,8 @@ class FilmController extends Controller
     {
         $film = Film::findOrFail($film->id);
         $artists = $film->artists()->pluck('name');
-        return response()->json(['Film' => $film, 'Artists' => $artists]);
+        $response = ['Film' => $film, 'Artists' => $artists];
+        return $response;
     }
 
     /**
