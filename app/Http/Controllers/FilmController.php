@@ -19,11 +19,19 @@ class FilmController extends Controller
         $films = Film::query();
         $genre = $request->query('genre_id');
         $sort = $request->query('sort');
+        $artist = $request->query('artist_id');
+
+        if ($artist) {
+            $films = Film::whereHas('artists', function ($q) use ($artist) {
+                $q->where('artist_id', $artist);
+            });
+        }
         if ($genre) {
             $films->where('genre_id', $genre);
         }
         if ($sort) {
-            substr($sort,0,1) === '-' ? $films->orderBy('title', 'desc') : $films->orderBy('title');
+            substr($sort, 0, 1) === '-' ? $films->
+            orderBy('title', 'desc') : $films->orderBy('title');
         }
 
         return $films->get();
@@ -32,7 +40,7 @@ class FilmController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreFilmRequest  $request
+     * @param  \App\Http\Requests\StoreFilmRequest $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreFilmRequest $request)
@@ -44,7 +52,7 @@ class FilmController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Film  $film
+     * @param  \App\Models\Film $film
      * @return \Illuminate\Http\Response
      */
     public function show(Film $film)
@@ -57,8 +65,8 @@ class FilmController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateFilmRequest  $request
-     * @param  \App\Models\Film  $film
+     * @param  \App\Http\Requests\UpdateFilmRequest $request
+     * @param  \App\Models\Film $film
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateFilmRequest $request, Film $film)
@@ -72,7 +80,7 @@ class FilmController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Film  $film
+     * @param  \App\Models\Film $film
      * @return \Illuminate\Http\Response
      */
     public function destroy(Film $film)
