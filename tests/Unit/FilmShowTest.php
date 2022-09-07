@@ -11,33 +11,21 @@ class FilmShowTest extends TestCase
      *
      * @return void
      */
-    public function testShowFilmNoQuery()
+    public function test_show_film_correct()
     {
-        $response = $this->get('/api/films');
+        $response = $this->get('/api/films/1');
         $response->assertStatus(200);
     }
 
-    public function testShowFilmWithGenre()
+    public function test_show_film_missing()
     {
-        $response = $this->get('/api/films?genre_id=1');
-        $response->assertStatus(200);
+        $response = $this->get('/api/films/9999');
+        $response->assertStatus(404);
     }
 
-    public function testShowFilmWithArtist()
+    public function test_show_film_incorrect()
     {
-        $response = $this->get('/api/films?artist_id=1');
-        $response->assertStatus(200);
-    }
-
-    public function testShowFilmWithSort()
-    {
-        $response = $this->get('/api/films?sort=title');
-        $response->assertStatus(200);
-    }
-
-    public function testShowFilmWithAllParams()
-    {
-        $response = $this->get('/api/films?sort=-title&genre_id=1&artist_id=2');
-        $response->assertStatus(200);
+        $response = $this->get('/api/films/artist');
+        $response->assertStatus(500);
     }
 }
