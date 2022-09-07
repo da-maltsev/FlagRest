@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Film extends Model
 {
     use HasFactory;
+    use Filterable;
 
     protected $fillable = ['title', 'genre_id'];
     protected $hidden = ['created_at', 'updated_at'];

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FilterFilmRequest;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
 use App\Http\Requests\UpdateFilmRequest;
+use App\Http\Filters\FilmFilter;
 use Illuminate\Http\Request;
 
 class FilmController extends Controller
@@ -14,25 +16,40 @@ class FilmController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
-        $films = Film::query();
-        $genre = $request->query('genre_id');
-        $sort = $request->query('sort');
-        $artist = $request->query('artist_id');
+//    public function index(Request $request)
+//    {
+//        $films = Film::query();
+//        $genre = $request->query('genre_id');
+//        $sort = $request->query('sort');
+//        $artist = $request->query('artist_id');
+//
+//        if ($artist) {
+//            $films = Film::whereHas('artists', function ($q) use ($artist) {
+//                $q->where('artist_id', $artist);
+//            });
+//        }
+//        if ($genre) {
+//            $films->where('genre_id', $genre);
+//        }
+//        if ($sort) {
+//            substr($sort, 0, 1) === '-' ? $films->
+//            orderBy('title', 'desc') : $films->orderBy('title');
+//        }
+//
+//        return $films->get();
+//    }
 
-        if ($artist) {
-            $films = Film::whereHas('artists', function ($q) use ($artist) {
-                $q->where('artist_id', $artist);
-            });
-        }
-        if ($genre) {
-            $films->where('genre_id', $genre);
-        }
-        if ($sort) {
-            substr($sort, 0, 1) === '-' ? $films->
-            orderBy('title', 'desc') : $films->orderBy('title');
-        }
+    public function index(FilterFilmRequest $request)
+    {
+        $data = $request->validated();
+        //$sort = $request->query('sort');
+        $filter = app()->make(FilmFilter::class, ['queryParams' => array_filter($data)]);
+        $films = Film::filter($filter);
+
+//        if ($sort) {
+//            substr($sort, 0, 1) === '-' ? $films->
+//            orderBy('title', 'desc') : $films->orderBy('title');
+//        }
 
         return $films->get();
     }
