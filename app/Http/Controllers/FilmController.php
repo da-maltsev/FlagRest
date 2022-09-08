@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FilmResource;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
 use App\Http\Requests\UpdateFilmRequest;
@@ -22,7 +23,7 @@ class FilmController extends Controller
         $artist = $request->query('artist_id');
 
         if ($artist) {
-            $films = Film::whereHas('artists', function ($q) use ($artist) {
+            $films->whereHas('artists', function ($q) use ($artist) {
                 $q->where('artist_id', $artist);
             });
         }
@@ -31,10 +32,10 @@ class FilmController extends Controller
         }
         if ($sort) {
             substr($sort, 0, 1) === '-' ? $films->
-            orderBy('title', 'desc') : $films->orderBy('title');
+            orderBy(substr($sort, 1), 'desc') : $films->orderBy($sort);
         }
 
-        return $films->get();
+        return FilmResource::collection($films->get());
     }
 
     /**
@@ -57,10 +58,8 @@ class FilmController extends Controller
      */
     public function show(Film $film)
     {
-        $film = Film::findOrFail($film->id);
-        $artists = $film->artists()->pluck('name');
-        $response = ['Film' => $film, 'Artists' => $artists];
-        return $response;
+        $film = new FilmResource(Film::findOrFail($film->id));
+        return $film;
     }
 
     /**
