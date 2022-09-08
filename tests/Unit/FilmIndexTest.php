@@ -19,13 +19,13 @@ class FilmIndexTest extends TestCase
 
     public function test_index_film_with_genre()
     {
-        $response = $this->get('/api/films?genre_id=1');
+        $response = $this->get('/api/films?filter[genre_id]=1');
         $response->assertStatus(200);
     }
 
     public function test_index_film_with_artist()
     {
-        $response = $this->get('/api/films?artist_id=1');
+        $response = $this->get('/api/films?filter[artists.id]=1');
         $response->assertStatus(200);
     }
 
@@ -37,19 +37,19 @@ class FilmIndexTest extends TestCase
 
     public function test_index_film_with_all_params()
     {
-        $response = $this->get('/api/films?sort=-title&genre_id=1&artist_id=2');
+        $response = $this->get('/api/films?sort=-title&filter[genre_id]=1&filter[artists.id]=2');
         $response->assertStatus(200);
     }
 
     public function test_index_film_with_wrong_genre()
     {
-        $response = $this->get('/api/films?genre_id=artist');
+        $response = $this->get('/api/films?filter[genre_id]=artist');
         $response->assertStatus(500);
     }
 
     public function test_index_film_with_wrong_artist()
     {
-        $response = $this->get('/api/films?artist_id=qwerty');
+        $response = $this->get('/api/films?filter[artists.id]=qwerty');
         $response->assertStatus(500);
     }
 }
