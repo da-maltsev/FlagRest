@@ -22,7 +22,7 @@ class FilmController extends Controller
         {
             $films = QueryBuilder::for(Film::class)
                 ->allowedFilters([AllowedFilter::exact('genre_id'),
-                    AllowedFilter::exact('artists.id')])
+                    AllowedFilter::exact('artist_id', 'artists.id')])
                 ->defaultSort('title')
                 ->allowedSorts('title');
 
@@ -63,7 +63,7 @@ class FilmController extends Controller
     public function update(UpdateFilmRequest $request, Film $film)
     {
         $filmUpd = Film::findOrFail($film->id);
-        $filmUpd->fill($request->all());
+        $filmUpd->fill($request->validated());
         $filmUpd->save();
         return $filmUpd;
     }
