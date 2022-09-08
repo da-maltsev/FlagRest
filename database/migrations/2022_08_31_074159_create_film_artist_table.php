@@ -19,13 +19,12 @@ return new class extends Migration
             $table->foreignId('artist_id');
             $table->timestamps();
 
-            $table->foreign('film_id')->references('id')->on('films');
-            $table->foreign('artist_id')->references('id')->on('artists');
+            $table->foreign('film_id')->references('id')->on('films')->onDelete('cascade');
+            $table->foreign('artist_id')->references('id')->on('artists')->onDelete('cascade');
         });
     }
 
     /**
-     * Reverse the migrations.
      *
      * @return void
      */
