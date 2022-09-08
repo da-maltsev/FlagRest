@@ -6,7 +6,10 @@ use App\Http\Resources\FilmResource;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
 use App\Http\Requests\UpdateFilmRequest;
+use Illuminate\Database\Eloquent\Concerns\QueriesRelationships;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class FilmController extends Controller
 {
@@ -16,27 +19,15 @@ class FilmController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
-        $films = Film::query();
-        $genre = $request->query('genre_id');
-        $sort = $request->query('sort');
-        $artist = $request->query('artist_id');
+        {
+            $films = QueryBuilder::for(Film::class)
+                ->allowedFilters([AllowedFilter::exact('genre_id'),
+                    AllowedFilter::exact('artists.id')])
+                ->defaultSort('title')
+                ->allowedSorts('title');
 
-        if ($artist) {
-            $films->whereHas('artists', function ($q) use ($artist) {
-                $q->where('artist_id', $artist);
-            });
+            return FilmResource::collection($films->get());
         }
-        if ($genre) {
-            $films->where('genre_id', $genre);
-        }
-        if ($sort) {
-            substr($sort, 0, 1) === '-' ? $films->
-            orderBy(substr($sort, 1), 'desc') : $films->orderBy($sort);
-        }
-
-        return FilmResource::collection($films->get());
-    }
 
     /**
      * Store a newly created resource in storage.
