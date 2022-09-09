@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Queries\FilmIndexQuery;
 use App\Http\Resources\FilmResource;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
@@ -13,18 +14,16 @@ use Spatie\QueryBuilder\QueryBuilder;
 class FilmController extends Controller
 {
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * List of Films.
+     *
+     * @queryParam filter[genre_id], integer
+     * @queryParam filter[artist_id], integer
+     * @queryParam sort = title or -title for DESC order
+     *
      */
-    public function index(Request $request)
+    public function index(FilmIndexQuery $filmIndexQuery)
     {
-        $films = QueryBuilder::for(Film::class)
-            ->allowedFilters([AllowedFilter::exact('genre_id'),
-                AllowedFilter::exact('artist_id', 'artists.id')])
-            ->defaultSort('title')
-            ->allowedSorts('title');
-
-        return FilmResource::collection($films->get());
+        return FilmResource::collection($filmIndexQuery->get());
     }
 
     /**
