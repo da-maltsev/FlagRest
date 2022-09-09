@@ -6,7 +6,6 @@ use App\Http\Resources\FilmResource;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
 use App\Http\Requests\UpdateFilmRequest;
-use Illuminate\Database\Eloquent\Concerns\QueriesRelationships;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -14,31 +13,27 @@ use Spatie\QueryBuilder\QueryBuilder;
 class FilmController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request)
-        {
-            $films = QueryBuilder::for(Film::class)
-                ->allowedFilters([AllowedFilter::exact('genre_id'),
-                    AllowedFilter::exact('artist_id', 'artists.id')])
-                ->defaultSort('title')
-                ->allowedSorts('title');
+    {
+        $films = QueryBuilder::for(Film::class)
+            ->allowedFilters([AllowedFilter::exact('genre_id'),
+                AllowedFilter::exact('artist_id', 'artists.id')])
+            ->defaultSort('title')
+            ->allowedSorts('title');
 
-            return FilmResource::collection($films->get());
-        }
+        return FilmResource::collection($films->get());
+    }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreFilmRequest $request
-     * @return \Illuminate\Http\Response
+     * @param StoreFilmRequest $request
+     * @return Film
      */
-    public function store(StoreFilmRequest $request)
+    public function store(StoreFilmRequest $request): Film
     {
-        $film = Film::create($request->validated());
-        return $film;
+        return Film::create($request->validated());
     }
 
     /**
@@ -47,37 +42,30 @@ class FilmController extends Controller
      * @param  \App\Models\Film $film
      * @return \Illuminate\Http\Response
      */
-    public function show(Film $film)
+    public function show(Film $film): FilmResource
     {
-        $film = new FilmResource(Film::findOrFail($film->id));
+        return new FilmResource($film);
+    }
+
+    /**
+     * @param UpdateFilmRequest $request
+     * @param Film $film
+     * @return Film
+     */
+    public function update(UpdateFilmRequest $request, Film $film): Film
+    {
+        $film->update($request->validated());
+        $film->save();
         return $film;
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateFilmRequest $request
-     * @param  \App\Models\Film $film
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateFilmRequest $request, Film $film)
-    {
-        $filmUpd = Film::findOrFail($film->id);
-        $filmUpd->fill($request->validated());
-        $filmUpd->save();
-        return $filmUpd;
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Film $film
-     * @return \Illuminate\Http\Response
+     * @param Film $film
+     * @return Response
      */
     public function destroy(Film $film)
     {
-        $film = Film::findOrFail($film->id);
-        $film->delete();
-        return response(null, 204);
+        $film->deleteOrFail();
+        return response('', 204);
     }
 }
