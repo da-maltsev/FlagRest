@@ -7,9 +7,6 @@ use App\Http\Resources\FilmResource;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
 use App\Http\Requests\UpdateFilmRequest;
-use Illuminate\Http\Request;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class FilmController extends Controller
 {
@@ -39,7 +36,7 @@ class FilmController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Film $film
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\FilmResource
      */
     public function show(Film $film): FilmResource
     {
@@ -61,6 +58,7 @@ class FilmController extends Controller
     /**
      * @param Film $film
      * @return Response
+     * @throws \Throwable
      */
     public function destroy(Film $film)
     {
