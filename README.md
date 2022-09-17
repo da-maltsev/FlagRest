@@ -2,6 +2,8 @@
 # Тестовое задание №2 (REST API)
 ## Инструкция для запуска
 
+php 8.1
+
 Выполнить следующие команды:
 - composer install
 - php artisan key:generate
