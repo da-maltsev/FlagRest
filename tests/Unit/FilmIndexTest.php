@@ -44,12 +44,12 @@ class FilmIndexTest extends TestCase
     public function test_index_film_with_wrong_genre()
     {
         $response = $this->get('/api/films?filter[genre_id]=artist');
-        $response->assertStatus(500);
+        $response->assertStatus(200);
     }
 
     public function test_index_film_with_wrong_artist()
     {
         $response = $this->get('/api/films?filter[artist_id]=qwerty');
-        $response->assertStatus(500);
+        $response->assertStatus(200);
     }
 }

@@ -26,6 +26,6 @@ class FilmShowTest extends TestCase
     public function test_show_film_incorrect()
     {
         $response = $this->get('/api/films/artist');
-        $response->assertStatus(500);
+        $response->assertStatus(404);
     }
 }
