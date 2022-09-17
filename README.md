@@ -1,5 +1,13 @@
 
 # Тестовое задание №2 (REST API)
+## Инструкция для запуска
+
+Выполнить следующие команды:
+- composer install
+- php artisan key:generate
+- php artisan migrate:fresh --seed
+- php artisan test
+- php artisan serve
 
 ## Задание:
 
